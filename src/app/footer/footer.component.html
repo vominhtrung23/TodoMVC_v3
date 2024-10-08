@@ -1,0 +1,10 @@
+<div class="inline-flex justify-between bg-white p-4 w-full">
+    <label for="">{{activeCount}} item left</label>
+    <div class="flex gap-3">
+      <button (click)="filter('All')">All</button>
+      <button (click)="filter('Active')">Active</button>
+      <button (click)="filter('Completed')">Completed</button>
+    </div>
+
+    <button (click)="clearCompleted()">Clear Completed</button>
+  </div>
