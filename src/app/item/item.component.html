@@ -1,0 +1,4 @@
+<li  class="inline-flex relative bg-white p-4 w-full">
+    <div class="w-4/5 cursor-pointer"  [ngClass]="{'line-through': item.completed}" (click)="toggleItem(item)">{{ item.title }} - {{ item.completed }} </div>
+    <button class="right-4 absolute cursor-pointer" (click)="remove(item)">remove</button>
+  </li>

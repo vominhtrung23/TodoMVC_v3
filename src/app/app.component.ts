@@ -8,55 +8,24 @@ import { HeaderComponent } from "./header/header.component";
 import { TodoItemComponent } from "./todo-item/todo-item.component";
 import { FooterComponent } from "./footer/footer.component";
 import {TodoService} from "../app/todo.service"
-
+import { HttpClient } from '@angular/common/http'; // Nhập HttpClient để sử dụng
+import { provideHttpClient } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, ReactiveFormsModule, CommonModule, HeaderComponent, TodoItemComponent, FooterComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
 })
 export class AppComponent {
   heading = 'Todos';
   input = new FormControl('');
-  items: Todo[] = [];
+  items = new BehaviorSubject<Todo[]>([]);
 
- 
   private service = inject(TodoService);
-  constructor(){
-    this.items = this.service.items;
+  constructor() { 
+    this.items = this.service.itemsSubject$;
+    this.service.getTodosjson();
   }
-
  
-  // addnew() {
-  //   let value = this.input.value;
-  //   console.log("dd", !value, value?.trim.length);
-  //   if (!value) {
-  //     return
-  //   }
-  //   this.items.push({
-  //     id: uuidv4(),
-  //     title: value,
-  //     isComplete: false
-  //   });
-  //   this.input.setValue('');
-  //   console.log("items", this.items);
-  // }
-  // toggleAll() {
-  //   this.toggleAllItems = !this.toggleAllItems;
-  //   this.items.forEach((item: any) => {
-  //     item.isComplete = this.toggleAllItems;
-  //   });
-  // }
-  // remove(todo: Todo) {
-  //   this.items = this.items.filter((x) => x.id !== todo.id);
-  // }
-  // toggleItem(todo: Todo) {
-  //   todo.isComplete = !todo.isComplete;
-  //   console.log("todo", todo);
-  // }
-  // filter(filteritem: any) {
-  //   this.filterType = filteritem;
-  //   console.log("this.filterType", this.filterType);
-  // }
 }

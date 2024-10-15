@@ -1,9 +1,5 @@
 <ul>
-    @for (item of fillterItems; track item.id) {
-     
-    <li  class="inline-flex relative bg-white p-4 w-full">
-      <div class="cursor-pointer"  [ngClass]="{'line-through': item.isComplete}" (click)="toggleItem(item)">{{ item.title }} - {{ item.isComplete }} </div>
-      <button class="right-4 absolute cursor-pointer" (click)="remove(item)">remove</button>
-    </li>
-    }
+    <!-- @for (let item of filterItems | async; track item.id) { -->
+     <app-item [item]="item" *ngFor="let item of filterItems | async"></app-item>
+    <!-- } -->
   </ul>
