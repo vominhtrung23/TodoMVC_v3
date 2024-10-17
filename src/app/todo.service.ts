@@ -1,66 +1,69 @@
-import { Injectable } from '@angular/core';
-import { FilterType, Todo } from './models';
-import { v4 as uuidv4 } from 'uuid';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, map} from "rxjs";
+import { inject, Injectable } from '@angular/core';
 
+import { BehaviorSubject, map } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
+
+import { FilterType, Todo } from './models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TodoService {
-  items: Todo[] = [];
-  itemsSubject$ = new BehaviorSubject<Todo[]>([]);
+  items$ = new BehaviorSubject<Todo[]>([]);
   filterType: FilterType = 'All';
-  private jsonUrl = 'assets/todos.json';
-  constructor(private http: HttpClient) { }
-  public getTodosjson() {
-    this.http.get<any>("https://jsonplaceholder.typicode.com/todos?_limit=10").subscribe(res => {
-      this.itemsSubject$.next(res);
-    });
+  http = inject(HttpClient);
+
+  public getTodosJson() {
+    this.http
+      .get<Todo[]>('https://jsonplaceholder.typicode.com/todos?_limit=10')
+      .subscribe((res) => {
+        this.items$.next(res);
+      });
   }
 
   add(value: string) {
-    const currentArray = this.itemsSubject$.getValue();
-    let valueNewobject = {
+    const current = this.items$.getValue();
+    const todo: Todo = {
       id: uuidv4(),
       title: value,
-      completed: false
+      completed: false,
     };
-    const updatedArray = [...currentArray, valueNewobject];
-    this.itemsSubject$.next(updatedArray);
+    const nextValue = [...current, todo];
+    this.items$.next(nextValue);
   }
 
   remove(todo: Todo) {
-    const currentItems = this.itemsSubject$.getValue();
-    const updatedItems = currentItems.filter(x => x.id !== todo.id);
-    this.itemsSubject$.next(updatedItems);
+    const nextValue = this.items$.getValue().filter((x) => x.id !== todo.id);
+    this.items$.next(nextValue);
   }
 
   get activeCount() {
     let activeCount;
-    this.itemsSubject$.pipe(
-      map((items: any[]) => items.filter(x => !x.completed).length)
-    ).subscribe(count=> {activeCount = count});
+    this.items$
+      .pipe(map((items: any[]) => items.filter((x) => !x.completed).length))
+      .subscribe((count) => {
+        activeCount = count;
+      });
     return activeCount;
   }
 
   filter(filtering: any) {
-    this.filterType = filtering; 
+    this.filterType = filtering;
   }
 
   filterItems() {
     switch (this.filterType) {
       case 'Active':
-        return this.itemsSubject$.pipe(
-          map(items => items.filter(item => !item.completed)) 
+        return this.items$.pipe(
+          map((items) => items.filter((item) => !item.completed))
         );
       case 'Completed':
-        return this.itemsSubject$.pipe(
-          map(items => items.filter(item => item.completed)) 
+        return this.items$.pipe(
+          map((items) => items.filter((item) => item.completed))
         );
       default:
-        return this.itemsSubject$;
+        return this.items$;
     }
   }
 }

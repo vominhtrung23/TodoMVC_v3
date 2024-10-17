@@ -1,5 +1,7 @@
 import { Component, inject } from '@angular/core';
-import {TodoService} from '../todo.service';
+
+import { TodoService } from '../todo.service';
+
 @Component({
   selector: 'app-footer',
   standalone: true,
@@ -15,9 +17,9 @@ export class FooterComponent {
   get activeCount() {
     return this.service.activeCount;
   }
-  clearCompleted(){
-    const currentItems = this.service.itemsSubject$.getValue();
-    const updatedItems = currentItems.filter(x =>!x.completed);
-    this.service.itemsSubject$.next(updatedItems);
+  clearCompleted() {
+    const currentItems = this.service.items$.getValue();
+    const updatedItems = currentItems.filter((x) => !x.completed);
+    this.service.items$.next(updatedItems);
   }
 }

@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+
 import { TodoService } from '../todo.service';
+
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -16,20 +18,17 @@ export class HeaderComponent {
   addnew() {
     let value = this.input.value;
     if (!value) {
-      return
+      return;
     }
     this.service.add(value);
     this.input.setValue('');
   }
   toggleAll() {
     this.toggleAllItems = !this.toggleAllItems;
-    const currentItems = this.service.itemsSubject$.value; 
+    const currentItems = this.service.items$.value;
     const updatedItems = currentItems.map((item: any) => {
-      return { ...item, completed: this.toggleAllItems }; 
+      return { ...item, completed: this.toggleAllItems };
     });
-    this.service.itemsSubject$.next(updatedItems);
+    this.service.items$.next(updatedItems);
   }
-
-
-
 }
