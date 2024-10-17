@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 
 import { FilterType, Todo } from './models';
@@ -11,28 +11,18 @@ import { FilterType, Todo } from './models';
 })
 export class TodoService {
   private items$ = new BehaviorSubject<Todo[]>([]);
-  filterType: FilterType = 'All';
-  http = inject(HttpClient);
+  private filterType$ = new BehaviorSubject<FilterType>('All');
+  private http = inject(HttpClient);
 
-  // computed
-  get activeCount() {
-    return this.items$.getValue().filter((x) => !x.completed).length;
-  }
-
-  get filterItems$() {
-    switch (this.filterType) {
-      case 'Active':
-        return this.items$.pipe(
-          map((items) => items.filter((item) => !item.completed))
-        );
-      case 'Completed':
-        return this.items$.pipe(
-          map((items) => items.filter((item) => item.completed))
-        );
-      default:
-        return this.items$;
-    }
-  }
+  vm$ = combineLatest([this.items$, this.filterType$]).pipe(
+    map(([items, filter]) => {
+      return {
+        filteredItems: getFilterItems(items, filter),
+        filter,
+        activeCount: items.filter((x) => !x.completed).length,
+      };
+    })
+  );
 
   load() {
     this.http
@@ -72,8 +62,8 @@ export class TodoService {
     this.items$.next(nextValue);
   }
 
-  filter(filtering: any) {
-    this.filterType = filtering;
+  filter(filtering: FilterType) {
+    this.filterType$.next(filtering);
   }
 
   clearCompleted() {
@@ -83,3 +73,13 @@ export class TodoService {
 }
 
 // computed
+function getFilterItems(items: Todo[], filter: FilterType) {
+  switch (filter) {
+    case 'Active':
+      return items.filter((item) => !item.completed);
+    case 'Completed':
+      return items.filter((item) => item.completed);
+    default:
+      return items;
+  }
+}

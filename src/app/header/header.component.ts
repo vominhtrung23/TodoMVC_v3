@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { TodoService } from '../todo.service';
@@ -8,6 +8,7 @@ import { TodoService } from '../todo.service';
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './header.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
   private service = inject(TodoService);

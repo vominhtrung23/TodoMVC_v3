@@ -1,5 +1,5 @@
 <ul>
-    <!-- @for (let item of filterItems | async; track item.id) { -->
-     <app-item [item]="item" *ngFor="let item of filterItems | async"></app-item>
-    <!-- } -->
-  </ul>
+  <ng-container *ngIf="vm$ | async as vm">
+    <app-item [item]="item" *ngFor="let item of vm.filteredItems"></app-item>
+  </ng-container>
+</ul>

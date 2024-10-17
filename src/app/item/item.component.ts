@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  Input,
+} from '@angular/core';
 
 import { Todo } from '../models';
 import { TodoService } from '../todo.service';
@@ -9,6 +14,7 @@ import { TodoService } from '../todo.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './item.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ItemComponent {
   private service = inject(TodoService);
