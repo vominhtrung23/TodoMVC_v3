@@ -1,5 +1,6 @@
 <ul>
   <ng-container *ngIf="vm$ | async as vm">
+    <div *ngIf="vm.isLoading">Loading...</div>
     <app-item [item]="item" *ngFor="let item of vm.filteredItems"></app-item>
   </ng-container>
 </ul>
