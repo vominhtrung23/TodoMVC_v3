@@ -14,14 +14,24 @@ export class TodoService {
   filterType: FilterType = 'All';
   http = inject(HttpClient);
 
+  // computed
   get activeCount() {
-    let activeCount;
-    this.items$
-      .pipe(map((items: any[]) => items.filter((x) => !x.completed).length))
-      .subscribe((count) => {
-        activeCount = count;
-      });
-    return activeCount;
+    return this.items$.getValue().filter((x) => !x.completed).length;
+  }
+
+  get filterItems$() {
+    switch (this.filterType) {
+      case 'Active':
+        return this.items$.pipe(
+          map((items) => items.filter((item) => !item.completed))
+        );
+      case 'Completed':
+        return this.items$.pipe(
+          map((items) => items.filter((item) => item.completed))
+        );
+      default:
+        return this.items$;
+    }
   }
 
   load() {
@@ -66,23 +76,10 @@ export class TodoService {
     this.filterType = filtering;
   }
 
-  filterItems() {
-    switch (this.filterType) {
-      case 'Active':
-        return this.items$.pipe(
-          map((items) => items.filter((item) => !item.completed))
-        );
-      case 'Completed':
-        return this.items$.pipe(
-          map((items) => items.filter((item) => item.completed))
-        );
-      default:
-        return this.items$;
-    }
-  }
-
   clearCompleted() {
     const nextValue = this.items$.getValue().filter((x) => !x.completed);
     this.items$.next(nextValue);
   }
 }
+
+// computed

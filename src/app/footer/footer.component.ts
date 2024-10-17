@@ -1,3 +1,4 @@
+import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 
 import { FilterType } from '../models';
@@ -6,7 +7,7 @@ import { TodoService } from '../todo.service';
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [],
+  imports: [AsyncPipe],
   templateUrl: './footer.component.html',
 })
 export class FooterComponent {

@@ -15,6 +15,6 @@ export class TodoItemComponent {
   private service = inject(TodoService);
 
   get filterItems() {
-    return this.service.filterItems();
+    return this.service.filterItems$;
   }
 }
