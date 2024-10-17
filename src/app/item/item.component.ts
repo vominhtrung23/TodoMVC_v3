@@ -1,7 +1,9 @@
-import { Component, inject, Input } from '@angular/core';
-import { TodoService } from '../todo.service';
-import { Todo } from '../models';
 import { CommonModule } from '@angular/common';
+import { Component, inject, Input } from '@angular/core';
+
+import { Todo } from '../models';
+import { TodoService } from '../todo.service';
+
 @Component({
   selector: 'app-item',
   standalone: true,
@@ -9,12 +11,15 @@ import { CommonModule } from '@angular/common';
   templateUrl: './item.component.html',
 })
 export class ItemComponent {
-  @Input({ required: true }) item!: any;
   private service = inject(TodoService);
+
+  @Input({ required: true }) item!: any;
+
   remove(todo: Todo) {
     this.service.remove(todo);
   }
+
   toggleItem(todo: Todo) {
-    todo.completed = !todo.completed;
+    this.service.update(todo);
   }
 }

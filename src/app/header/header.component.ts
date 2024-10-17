@@ -10,12 +10,13 @@ import { TodoService } from '../todo.service';
   templateUrl: './header.component.html',
 })
 export class HeaderComponent {
-  heading = 'Todos';
-  toggleAllItems = false;
-  input = new FormControl('');
   private service = inject(TodoService);
 
-  addnew() {
+  heading = 'Todos';
+  isActive = false;
+  input = new FormControl('');
+
+  addNew() {
     let value = this.input.value;
     if (!value) {
       return;
@@ -23,12 +24,9 @@ export class HeaderComponent {
     this.service.add(value);
     this.input.setValue('');
   }
+
   toggleAll() {
-    this.toggleAllItems = !this.toggleAllItems;
-    const currentItems = this.service.items$.value;
-    const updatedItems = currentItems.map((item: any) => {
-      return { ...item, completed: this.toggleAllItems };
-    });
-    this.service.items$.next(updatedItems);
+    this.isActive = !this.isActive;
+    this.service.toggleAll(this.isActive);
   }
 }

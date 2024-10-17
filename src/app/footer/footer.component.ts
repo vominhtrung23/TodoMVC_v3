@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 
+import { FilterType } from '../models';
 import { TodoService } from '../todo.service';
 
 @Component({
@@ -11,15 +12,15 @@ import { TodoService } from '../todo.service';
 export class FooterComponent {
   private service = inject(TodoService);
 
-  filter(filteritem: any) {
-    this.service.filter(filteritem);
+  filter(filterItem: FilterType) {
+    this.service.filter(filterItem);
   }
+
   get activeCount() {
     return this.service.activeCount;
   }
+
   clearCompleted() {
-    const currentItems = this.service.items$.getValue();
-    const updatedItems = currentItems.filter((x) => !x.completed);
-    this.service.items$.next(updatedItems);
+    this.service.clearCompleted();
   }
 }

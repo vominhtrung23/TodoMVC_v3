@@ -1,14 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
-
-import { BehaviorSubject } from 'rxjs';
 
 import { TodoService } from '../app/todo.service';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
-import { Todo } from './models';
 import { TodoItemComponent } from './todo-item/todo-item.component';
 
 @Component({
@@ -24,14 +21,11 @@ import { TodoItemComponent } from './todo-item/todo-item.component';
   ],
   templateUrl: './app.component.html',
 })
-export class AppComponent {
-  heading = 'Todos';
+export class AppComponent implements OnInit {
+  service = inject(TodoService);
   input = new FormControl('');
-  items = new BehaviorSubject<Todo[]>([]);
 
-  private service = inject(TodoService);
-  constructor() {
-    this.items = this.service.items$;
-    this.service.getTodosJson();
+  ngOnInit(): void {
+    this.service.load();
   }
 }

@@ -10,13 +10,23 @@ import { FilterType, Todo } from './models';
   providedIn: 'root',
 })
 export class TodoService {
-  items$ = new BehaviorSubject<Todo[]>([]);
+  private items$ = new BehaviorSubject<Todo[]>([]);
   filterType: FilterType = 'All';
   http = inject(HttpClient);
 
-  public getTodosJson() {
+  get activeCount() {
+    let activeCount;
+    this.items$
+      .pipe(map((items: any[]) => items.filter((x) => !x.completed).length))
+      .subscribe((count) => {
+        activeCount = count;
+      });
+    return activeCount;
+  }
+
+  load() {
     this.http
-      .get<Todo[]>('https://jsonplaceholder.typicode.com/todos?_limit=10')
+      .get<Todo[]>('https://jsonplaceholder.typicode.com/todos?_limit=5')
       .subscribe((res) => {
         this.items$.next(res);
       });
@@ -38,14 +48,18 @@ export class TodoService {
     this.items$.next(nextValue);
   }
 
-  get activeCount() {
-    let activeCount;
-    this.items$
-      .pipe(map((items: any[]) => items.filter((x) => !x.completed).length))
-      .subscribe((count) => {
-        activeCount = count;
-      });
-    return activeCount;
+  update(todo: Todo) {
+    const nextValue = this.items$
+      .getValue()
+      .map((x) => (x.id === todo.id ? { ...x, completed: !x.completed } : x));
+    this.items$.next(nextValue);
+  }
+
+  toggleAll(isActive: boolean) {
+    const nextValue = this.items$
+      .getValue()
+      .map((item: Todo) => ({ ...item, completed: isActive }));
+    this.items$.next(nextValue);
   }
 
   filter(filtering: any) {
@@ -65,5 +79,10 @@ export class TodoService {
       default:
         return this.items$;
     }
+  }
+
+  clearCompleted() {
+    const nextValue = this.items$.getValue().filter((x) => !x.completed);
+    this.items$.next(nextValue);
   }
 }
