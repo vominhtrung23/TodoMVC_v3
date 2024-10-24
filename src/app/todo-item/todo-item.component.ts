@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { ItemComponent } from '../item/item.component';
-import { TodoService } from '../todo.service';
+import { TodosStore } from '../todos.store';
 
 @Component({
   selector: 'app-todo-item',
@@ -13,6 +13,6 @@ import { TodoService } from '../todo.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TodoItemComponent {
-  private service = inject(TodoService);
-  vm$ = this.service.vm$;
+  todoStore = inject(TodosStore);
+  vm$ = this.todoStore.vm$;
 }

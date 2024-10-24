@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
-import { TodoService } from '../todo.service';
+import { v4 as uuidv4 } from 'uuid';
+
+import { TodosStore } from '../todos.store';
 
 @Component({
   selector: 'app-header',
@@ -11,8 +13,8 @@ import { TodoService } from '../todo.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
-  private service = inject(TodoService);
-
+  // private service = inject(TodoService);
+  private TodosStore = inject(TodosStore);
   heading = 'Todos';
   isActive = false;
   input = new FormControl('');
@@ -22,12 +24,25 @@ export class HeaderComponent {
     if (!value) {
       return;
     }
-    this.service.add(value);
+    let newItems = {
+      id: uuidv4(),
+      title: value,
+      completed: false,
+    };
+    this.TodosStore.updateItems((items) => [...items, newItems]);
     this.input.setValue('');
   }
 
   toggleAll() {
-    this.isActive = !this.isActive;
-    this.service.toggleAll(this.isActive);
+    this.TodosStore.updateItems((items) => {
+      const hasIncomplete = items.some((item) => !item.completed);
+      this.isActive = hasIncomplete;
+
+      const updatedItems = items.map((item) => ({
+        ...item,
+        completed: this.isActive,
+      }));
+      return updatedItems;
+    });
   }
 }

@@ -1,8 +1,7 @@
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { FilterType } from '../models';
-import { TodoService } from '../todo.service';
+import { TodosStore } from '../todos.store';
 
 @Component({
   selector: 'app-footer',
@@ -12,15 +11,18 @@ import { TodoService } from '../todo.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FooterComponent {
-  private service = inject(TodoService);
+  // private service = inject(TodoService);
+  // vm$ = this.service.vm$;
+  private todoStore = inject(TodosStore);
+  vm$ = this.todoStore.vm$;
 
-  vm$ = this.service.vm$;
-
-  filter(filterItem: FilterType) {
-    this.service.filter(filterItem);
+  filter(filterItems: any) {
+    this.todoStore.filter(filterItems);
   }
 
   clearCompleted() {
-    this.service.clearCompleted();
+    this.todoStore.updateItems((items) =>
+      items.filter((item) => !item.completed)
+    );
   }
 }

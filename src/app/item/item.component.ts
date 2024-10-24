@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 
 import { Todo } from '../models';
-import { TodoService } from '../todo.service';
+import { TodosStore } from '../todos.store';
 
 @Component({
   selector: 'app-item',
@@ -17,15 +17,21 @@ import { TodoService } from '../todo.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ItemComponent {
-  private service = inject(TodoService);
-
+  // private service = inject(TodoService);
+  todoStore = inject(TodosStore);
   @Input({ required: true }) item!: any;
 
   remove(todo: Todo) {
-    this.service.remove(todo);
+    this.todoStore.updateItems((items) =>
+      items.filter((x) => x.id !== todo.id)
+    );
   }
 
   toggleItem(todo: Todo) {
-    this.service.update(todo);
+    this.todoStore.updateItems((items) =>
+      items.map((x) =>
+        x.id === todo.id ? { ...x, completed: !x.completed } : x
+      )
+    );
   }
 }

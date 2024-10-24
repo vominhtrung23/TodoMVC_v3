@@ -1,17 +1,12 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  OnInit,
-} from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 
-import { TodoService } from '../app/todo.service';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { TodoItemComponent } from './todo-item/todo-item.component';
+import { TodosStore } from './todos.store';
 
 @Component({
   selector: 'app-root',
@@ -26,12 +21,11 @@ import { TodoItemComponent } from './todo-item/todo-item.component';
   ],
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TodosStore],
 })
 export class AppComponent implements OnInit {
-  service = inject(TodoService);
-  input = new FormControl('');
-
+  constructor(private todoStore: TodosStore) {}
   ngOnInit(): void {
-    this.service.load();
+    this.todoStore.fetchTodos();
   }
 }

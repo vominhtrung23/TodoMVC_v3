@@ -5,3 +5,9 @@ export interface Todo {
 }
 
 export type FilterType = 'All' | 'Active' | 'Completed';
+
+export interface TodosState {
+  items: Todo[];
+  filter: FilterType;
+  isLoading: Boolean;
+}
